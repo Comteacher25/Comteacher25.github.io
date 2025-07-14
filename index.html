@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fun Login Practice!</title>
+    <style>
+        /* Google Fonts Import */
+        @import url('https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Open+Sans:wght@400;700&display=swap');
+
+        /* General Body Styling */
+        body {
+            font-family: 'Open Sans', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(to right, #a1c4fd, #c2e9fb); /* Fun gradient background */
+            color: #333;
+        }
+
+        /* Login Container Styling */
+        .login-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            position: relative; /* Needed for absolute positioning of instructions */
+            overflow: hidden; /* Important for containing absolutely positioned children */
+        }
+
+        /* Title Styling */
+        h1 {
+            color: #4CAF50; /* Green for a friendly feel */
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-family: 'Bubblegum Sans', cursive; /* Playful font */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Input Group Styling */
+        .input-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+            font-size: 1.1em;
+        }
+
+        .input-group input {
+            width: calc(100% - 20px); /* Adjust for padding */
+            padding: 12px 10px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 1.1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus {
+            border-color: #4CAF50; /* Highlight on focus */
+            outline: none;
+        }
+
+        /* Button Styling (Yellow for Login, Blue for Try Again) */
+        .btn-primary {
+            background-color: #FFC107; /* Bright yellow */
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            margin-top: 10px; /* Space from inputs */
+        }
+
+        .btn-primary:hover {
+            background-color: #FFA000; /* Darker yellow on hover */
+            transform: translateY(-3px); /* Lift effect */
+        }
+
+        .btn-primary:active {
+            transform: translateY(0); /* Press effect */
+        }
+
+        /* Try Again Button Styling */
+        .btn-secondary {
+            background-color: #007bff; /* Blue for 'Try Again' */
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            display: none; /* Hidden by default */
+            margin-top: 20px;
+        }
+
+        .btn-secondary:hover {
+            background-color: #0056b3;
+            transform: translateY(-3px);
+        }
+
+        .btn-secondary:active {
+            transform: translateY(0);
+        }
+
+        /* Message Area Styling */
+        #message {
+            margin-top: 25px;
+            font-size: 1.2em;
+            font-weight: bold;
+            min-height: 25px; /* Reserve space for messages */
+        }
+
+        .success-message {
+            color: #28a745; /* Green for success */
+        }
+
+        .error-message {
+            color: #dc3545; /* Red for error */
+        }
+
+        /* Instructions Pop-up Styling */
+        .instructions-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7); /* Dark overlay */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10; /* Make sure it's on top */
+            border-radius: 15px; /* Match container border-radius */
+        }
+
+        .instructions-box {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 300px;
+            color: #333;
+            font-size: 1.2em;
+        }
+
+        .instructions-box h2 {
+            color: #FFC107; /* Yellow to match login button */
+            margin-bottom: 15px;
+            font-family: 'Bubblegum Sans', cursive;
+            font-size: 1.8em;
+        }
+
+        .instructions-box p {
+            margin-bottom: 10px;
+        }
+
+        /* Styling for the "Got It!" button on the initial popup */
+        .btn-instruction-gotit {
+            background-color: #4CAF50; /* Green color for the instruction button */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 20px;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-instruction-gotit:hover {
+            background-color: #388e3c; /* Darker green on hover */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <h1>Let's Practice Logging In!</h1>
+
+        <div class="input-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" placeholder="Type your username here">
+        </div>
+
+        <div class="input-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" placeholder="Type your password here">
+        </div>
+
+        <button id="loginButton" class="btn-primary">Login</button>
+        <button id="tryAgainButton" class="btn-secondary">Try Again!</button>
+
+        <div id="message"></div>
+
+        <div id="instructionsOverlay" class="instructions-overlay">
+            <div class="instructions-box">
+                <h2>Welcome, Little Coder!</h2>
+                <p>Click 'Got It!' to start practicing your login.</p>
+                <button id="gotItButton" class="btn-instruction-gotit">Got It!</button>
+            </div>
+        </div>
+
+    </div>
+
+    <audio id="successSound" src="beep-07.mp3" preload="auto"></audio>
+
+    <script>
+        // Store the detailed instructions as a string variable in JavaScript
+        // This text will be spoken aloud but not displayed on the main page.
+        const detailedInstructionsText = "Practice typing your username and a password here. Your password needs to be at least 5 characters, include a number, and a symbol. Click the Login button when you're ready!";
+
+        // Get references to our HTML elements
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const loginButton = document.getElementById('loginButton');
+        const tryAgainButton = document.getElementById('tryAgainButton');
+        const messageDisplay = document.getElementById('message');
+        const successSound = document.getElementById('successSound');
+        const instructionsOverlay = document.getElementById('instructionsOverlay');
+        const gotItButton = document.getElementById('gotItButton');
+
+        // Function to check if password contains a number
+        function hasNumber(str) {
+            return /\d/.test(str);
+        }
+
+        // Function to check if password contains a symbol (non-alphanumeric)
+        function hasSymbol(str) {
+            return /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]+/.test(str);
+        }
+
+        // Function to read text aloud
+        function readAloud(text) {
+            if ('speechSynthesis' in window) {
+                // Cancel any ongoing speech before starting new one
+                if (window.speechSynthesis.speaking) {
+                    window.speechSynthesis.cancel();
+                }
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.pitch = 1;
+                utterance.rate = 1;
+                utterance.volume = 1;
+
+                const voices = window.speechSynthesis.getVoices();
+                const preferredVoice = voices.find(voice => voice.name.includes('Google US English') || voice.lang === 'en-US');
+                if (preferredVoice) {
+                    utterance.voice = preferredVoice;
+                } else if (voices.length > 0) {
+                    utterance.voice = voices[0];
+                }
+                window.speechSynthesis.speak(utterance);
+            } else {
+                console.warn("Speech Synthesis API not supported in this browser. Messages will not be read aloud.");
+            }
+        }
+
+        // Event listener for the "Got It!" button on the initial popup
+        gotItButton.addEventListener('click', () => {
+            instructionsOverlay.style.display = 'none'; // Hide the initial instructions overlay
+            usernameInput.focus(); // Put cursor in username field
+
+            // NOW read the detailed instructions aloud!
+            readAloud(detailedInstructionsText);
+        });
+
+        // Event listener for the main Login button
+        loginButton.addEventListener('click', () => {
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+            let errorMessage = '';
+
+            // Validation Logic
+            if (username.length === 0) {
+                errorMessage = 'Oops! Please type a username.';
+            }
+            else if (password.length < 5) {
+                errorMessage = 'Oh no! Password needs at least 5 characters.';
+            } else if (!hasNumber(password)) {
+                errorMessage = 'Almost there! Password needs to include at least one number.';
+            } else if (!hasSymbol(password)) {
+                errorMessage = 'Don\'t forget! Password needs to include at least one symbol (like !, @, #, etc.).';
+            }
+
+            // Display and Read Aloud Result
+            if (errorMessage) {
+                messageDisplay.textContent = errorMessage;
+                messageDisplay.className = 'error-message';
+                readAloud(errorMessage); // Read error message aloud
+            } else {
+                messageDisplay.textContent = 'Login Successful! You are doing an amazing job!';
+                messageDisplay.className = 'success-message';
+                readAloud('Login Successful! You are doing an amazing job!'); // Read success message aloud
+
+                successSound.currentTime = 0;
+                successSound.play().catch(e => {
+                    console.error("Error playing success sound:", e);
+                });
+
+                usernameInput.value = '';
+                passwordInput.value = '';
+                loginButton.style.display = 'none';
+                tryAgainButton.style.display = 'block';
+            }
+        });
+
+        // Event listener for the "Try Again!" button
+        tryAgainButton.addEventListener('click', () => {
+            // Stop any ongoing speech
+            if ('speechSynthesis' in window && window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+            }
+
+            // Reset the message area
+            messageDisplay.textContent = '';
+            messageDisplay.className = '';
+
+            // Hide "Try Again!" button and show Login button
+            tryAgainButton.style.display = 'none';
+            loginButton.style.display = 'block';
+
+            // Put focus back on the username field for easy re-start
+            usernameInput.focus();
+            // Optionally, re-read the main instructions here if desired for new attempts
+            // readAloud(detailedInstructionsText);
+        });
+    </script>
+
+</body>
+</html>
